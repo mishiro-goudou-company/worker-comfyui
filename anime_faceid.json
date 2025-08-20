@@ -1,0 +1,305 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 749148369143947,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "dpmpp_2m_sde",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "28",
+        0
+      ],
+      "positive": [
+        "28",
+        1
+      ],
+      "negative": [
+        "28",
+        2
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Kサンプラー"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "novaAnimeXL_ilV100.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "チェックポイントを読み込む"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空の潜在画像"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "A cheerful person smiling warmly while shaping a rice ball (onigiri), facing the viewer directly. The rice ball is a small triangular ball of white rice, clearly formed by hand, with a black square sheet of nori (seaweed) wrapped around the bottom. Both hands are gently pressing and shaping the rice ball. The person is wearing casual clothes, standing in a bright kitchen. Natural lighting, soft shadows, high-detail textures of the rice and nori, wholesome and cozy atmosphere, anime or semi-realistic style.\n",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIPテキストエンコード（プロンプト）"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "text, watermark",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIPテキストエンコード（プロンプト）"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAEデコード"
+    }
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "画像を保存"
+    }
+  },
+  "10": {
+    "inputs": {
+      "preprocessor": "openpose",
+      "sd_version": "sdxl",
+      "resolution": 1024,
+      "preprocessor_override": "None",
+      "image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "AV_ControlNetPreprocessor",
+    "_meta": {
+      "title": "ControlNet Preprocessor"
+    }
+  },
+  "19": {
+    "inputs": {
+      "strength": 0.30000000000000004,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "control_net": [
+        "20",
+        0
+      ],
+      "image": [
+        "10",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "ControlNetを適用"
+    }
+  },
+  "20": {
+    "inputs": {
+      "control_net_name": "SDXL/controlnet-union-sdxl-1.0/diffusion_pytorch_model_promax.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "ControlNetモデルを読み込む"
+    }
+  },
+  "22": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "interpolation": "nearest",
+      "method": "pad",
+      "condition": "always",
+      "multiple_of": 0,
+      "image": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "27": {
+    "inputs": {
+      "detection_threshold": 0.8,
+      "min_face_size": 32,
+      "padding": 256,
+      "output_mode": "largest_face",
+      "face_output_format": "individual",
+      "classifier_type": "default",
+      "image": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "FaceDetectionNode",
+    "_meta": {
+      "title": "Face Detection and Crop"
+    }
+  },
+  "28": {
+    "inputs": {
+      "weight": 0.5000000000000001,
+      "start_at": 0,
+      "end_at": 1,
+      "instantid": [
+        "29",
+        0
+      ],
+      "insightface": [
+        "30",
+        0
+      ],
+      "control_net": [
+        "31",
+        0
+      ],
+      "image": [
+        "33",
+        0
+      ],
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "19",
+        0
+      ],
+      "negative": [
+        "19",
+        1
+      ]
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {
+      "title": "Apply InstantID"
+    }
+  },
+  "29": {
+    "inputs": {
+      "instantid_file": "SDXL/ip-adapter.bin"
+    },
+    "class_type": "InstantIDModelLoader",
+    "_meta": {
+      "title": "Load InstantID Model"
+    }
+  },
+  "30": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {
+      "title": "InstantID Face Analysis"
+    }
+  },
+  "31": {
+    "inputs": {
+      "control_net_name": "SDXL/controlnet-union-sdxl-1.0/diffusion_pytorch_model_promax.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "ControlNetモデルを読み込む"
+    }
+  },
+  "33": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "interpolation": "nearest",
+      "method": "fill / crop",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "35": {
+    "inputs": {
+      "image": "https://rtbtppfmaoklmlmeizau.supabase.co/storage/v1/object/public/reference-image/onigiri_reference.jpg",
+      "keep_alpha_channel": false,
+      "output_mode": false
+    },
+    "class_type": "LoadImageFromUrl",
+    "_meta": {
+      "title": "Load Image From URL ref"
+    }
+  },
+  "36": {
+    "inputs": {
+      "image": "https://rtbtppfmaoklmlmeizau.supabase.co/storage/v1/object/public/reference-image/IMG_0077_1.jpg",
+      "keep_alpha_channel": false,
+      "output_mode": false
+    },
+    "class_type": "LoadImageFromUrl",
+    "_meta": {
+      "title": "Load Image From URL face"
+    }
+  }
+}

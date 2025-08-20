@@ -1,0 +1,54 @@
+# anime faceid workflow用カスタムComfyUIワーカー
+FROM runpod/worker-comfyui:5.3.0-base
+
+# メタデータ
+LABEL maintainer="asuka"
+LABEL description="ComfyUI worker with anime faceid workflow support"
+LABEL version="1.0.0"
+
+# 作業ディレクトリをComfyUIに設定
+WORKDIR /comfyui
+
+# custom_nodesディレクトリを作成（存在しない場合）
+RUN mkdir -p custom_nodes
+
+# 必要なカスタムノードをGitHubから直接クローン
+RUN cd custom_nodes && \
+    git clone https://github.com/cubiq/ComfyUI_InstantID.git && \
+    git clone https://github.com/sipherxyz/comfyui-art-venture.git && \
+    git clone https://github.com/cubiq/ComfyUI_essentials.git && \
+    git clone https://github.com/Limbicnation/ComfyUI_FaceDetectionNode.git && \
+    git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git
+
+# 各カスタムノードの依存関係をインストール
+RUN cd custom_nodes && \
+    for dir in */; do \
+        if [ -f "$dir/requirements.txt" ]; then \
+            echo "Installing requirements for $dir" && \
+            pip install -r "$dir/requirements.txt"; \
+        fi; \
+    done
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  build-essential g++ gcc make cmake python3-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+# ★重要：最後にバージョンを強制固定
+RUN pip uninstall -y insightface onnxruntime onnxruntime-gpu onnxruntime-silicon onnxruntime-coreml || true && \
+    pip install --no-cache-dir \
+        insightface==0.7.3 \
+        onnxruntime-gpu==1.21.1 \
+        onnx==1.18.0
+
+# モデルフォルダ全体をコピー（シンプル！）
+COPY models/ models/
+
+# ワークフローファイルをコピー
+COPY anime_faceid.json /test_input.json
+
+# 最終的な作業ディレクトリ設定
+WORKDIR /
+
+# デフォルトコマンド
+CMD ["/start.sh"]
